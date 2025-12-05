@@ -1,24 +1,25 @@
 import gymnasium as gym
 import matplotlib.pyplot as plt
-from collections import deque
-import random
-import numpy as np
 from tqdm import tqdm
 
-import torch
-from torch import nn
-from torch.optim import Adam, SGD
-from torch.nn import SmoothL1Loss, MSELoss
-
 from dqn import DQN
+import torch
 
-env = gym.make("InvertedDoublePendulum-v5", render_mode="human", width=1280, height=720)
+Pendulum = "Single" # Set to "Single" or "Double"
+
+if Pendulum == "Single":
+    env = gym.make("InvertedPendulum-v5", render_mode="human", width=1280, height=720)
+    action_max = 3
+    input_dims = 4
+elif Pendulum == "Double":
+    env = gym.make("InvertedDoublePendulum-v5", render_mode="human", width=1280, height=720)
+    action_max = 3
+    input_dims = 4
 
 rewards = []
-maxepoch = 100
+maxepoch = 1000
 n_actions = 11
-action_max = 1
-Actor = DQN(input_dims=9, output_dims=n_actions)
+Actor = DQN(input_dims=input_dims, output_dims=n_actions)
 actionset = lambda x: [x[0][0]*(2*action_max)/n_actions - action_max]
 with tqdm(range(maxepoch)) as eps:
     for epoch in eps:
